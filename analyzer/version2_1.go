@@ -1,18 +1,24 @@
 package analyzer
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
-)
+		"strings"
+		"os"
+		"bufio")
 
-func V2(){
+type LogDetails struct{
+	InfoCount int64
+	WarningCount int64
+	ErrorCount int64
+	MostFreqError string
+	ErrorPercent float64
+
+}
+
+func V2_1()(LogDetails){
 	file, err := os.Open("data/logs.log")
 	
 	if err != nil {
-		fmt.Println("ERROR: ",err)
-		return
+		panic(err)
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -35,15 +41,13 @@ func V2(){
 		}
 
 	}
+	
 	var total int64 = int64(data_count["INFO"])+int64(data_count["WARN"])+int64(data_count["ERROR"])
+	
 	if total == 0{
-		fmt.Println("No Data Found!")
-		return
+		panic("No Data Found!")
 	}
-	fmt.Println("INFO :",data_count["INFO"])
-	fmt.Println("WARNING :",data_count["WARN"])
-	fmt.Println("ERROR :",data_count["ERROR"])
-
+	
 	var max int
 	var most string
 	for key, value := range error_count{
@@ -52,7 +56,14 @@ func V2(){
 			max = value
 		}
 	}
+	
 	var errorPercent float64 = (float64(error_count[most])/float64(data_count["ERROR"]))*100
 
-	fmt.Printf("Most Common Error: %s\nOccurrence: %.2f%%\n",most,errorPercent)
+	return LogDetails{
+		InfoCount: int64(data_count["INFO"]),
+		WarningCount: int64(data_count["WARN"]),
+		ErrorCount: int64(data_count["ERROR"]),
+		MostFreqError: most,
+		ErrorPercent: errorPercent,
+	}
 }
