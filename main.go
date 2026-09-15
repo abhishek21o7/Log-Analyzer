@@ -17,13 +17,18 @@ func main(){
     analyzer.V1_1()*/
 	//analyzer.V2()
 
-    logDetails := analyzer.V2_1()
+    logDetails, err := analyzer.V2_1()
+
+    if err != nil{
+        fmt.Println("Error : ",err)
+        return
+    }
 
     fmt.Printf("INFO : %d\nWARNING : %d\nERROR : %d\n",
                 logDetails.InfoCount,
                 logDetails.WarningCount,
                 logDetails.ErrorCount)
-    fmt.Printf("Most Common Error : %s\nOccurrence : %.2f\n",
+    fmt.Printf("Most Common Error : %s\nOccurrence : %.2f%%\n",
                 logDetails.MostFreqError,
                 logDetails.ErrorPercent)
 

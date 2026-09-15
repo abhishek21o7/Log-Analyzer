@@ -14,11 +14,11 @@ type LogDetails struct{
 
 }
 
-func V2_1()(LogDetails){
+func V2_1()(LogDetails,error){
 	file, err := os.Open("data/logs.log")
 	
 	if err != nil {
-		panic(err)
+		return LogDetails{},err
 	}
 
 	scanner := bufio.NewScanner(file)
@@ -59,11 +59,13 @@ func V2_1()(LogDetails){
 	
 	var errorPercent float64 = (float64(error_count[most])/float64(data_count["ERROR"]))*100
 
+	defer file.Close()
+	
 	return LogDetails{
 		InfoCount: int64(data_count["INFO"]),
 		WarningCount: int64(data_count["WARN"]),
 		ErrorCount: int64(data_count["ERROR"]),
 		MostFreqError: most,
 		ErrorPercent: errorPercent,
-	}
+	},nil
 }
